@@ -25,6 +25,7 @@
         <activity android:name=".ExitActivity"/>
         <activity android:name=".HomeActivity"/>
         <activity android:name=".RestartActivity"/>
+        <activity android:name=".OAuth20AuthorizationActivity" android:screenOrientation="nosensor"/>
     </application>
 
 </manifest>
