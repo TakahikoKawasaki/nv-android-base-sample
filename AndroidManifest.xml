@@ -9,6 +9,8 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".SampleApplication"
         android:label="@string/application_name"
@@ -23,9 +25,10 @@
         </activity>
 
         <activity android:name=".ExitActivity"/>
+        <activity android:name=".FBAuthorizationActivity"/>
         <activity android:name=".HomeActivity"/>
-        <activity android:name=".RestartActivity"/>
         <activity android:name=".OAuth20AuthorizationActivity" android:screenOrientation="nosensor"/>
+        <activity android:name=".RestartActivity"/>
     </application>
 
 </manifest>

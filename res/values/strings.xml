@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="application_name">sample</string>
+    <string name="client_id">client_id</string>
     <string name="exit">exit</string>
     <string name="launch">launch</string>
+    <string name="response_type">response_type</string>
+    <string name="responseType_code">code</string>
+    <string name="responseType_token">token</string>
     <string name="restart">restart</string>
+    <string name="send_request">send request</string>
 </resources>

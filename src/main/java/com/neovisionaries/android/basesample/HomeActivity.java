@@ -41,7 +41,8 @@ public final class HomeActivity extends BottomListActivity
      */
     private static Item[] items = {
         new Item("Exit",    ExitActivity.class),
-        new Item("Restart", RestartActivity.class)
+        new Item("Restart", RestartActivity.class),
+        new Item("Facebook Authorization", FBAuthorizationActivity.class)
     };
 
 

@@ -31,8 +31,10 @@ import com.neovisionaries.android.util.L;
 public class OAuth20AuthorizationActivity extends BaseActivity implements OAuth20ViewListener
 {
     private static final String EXTRA_KEY_REQUEST = "request";
+    private boolean mLoaded;
     private AuthorizationRequest mRequest;
     private OAuth20View mOAuth20View;
+    private String mRequestUrl;
 
 
     /**
@@ -45,13 +47,25 @@ public class OAuth20AuthorizationActivity extends BaseActivity implements OAuth2
         super.onCreate(savedInstanceState);
 
         // Set appearance of this Activity.
-        setContentView(R.layout.oauth20authorization_activity);
+        setContentView(R.layout.oauth20_authorization_activity);
+
+        // Initialize the flag.
+        mLoaded = false;
 
         // Extract the request from the Intent.
         mRequest = extractRequest();
 
         // Find OAuth20View instance from the view tree.
         mOAuth20View = (OAuth20View)findViewById(R.id.webview);
+
+        try
+        {
+            mRequestUrl = mRequest.toURL().toString();
+        }
+        catch (Exception e)
+        {
+            L.e(this, "Failed to convert the authorization request to an URL.", e);
+        }
     }
 
 
@@ -65,8 +79,20 @@ public class OAuth20AuthorizationActivity extends BaseActivity implements OAuth2
             return;
         }
 
+        if (mRequestUrl == null)
+        {
+            return;
+        }
+
+        if (mLoaded)
+        {
+            return;
+        }
+
+        mLoaded = true;
+
         L.d(this, "== Sending an authorization request.");
-        L.d(this, "URL = %s", mRequest.toURL().toString());
+        L.d(this, "URL = %s", mRequestUrl);
 
         // Send the authorization request to the OAuth 2.0 authorization endpoint.
         mOAuth20View.load(mRequest, this);
@@ -104,7 +130,9 @@ public class OAuth20AuthorizationActivity extends BaseActivity implements OAuth2
 
 
     @Override
-    public void onCodeIssued(OAuth20View view, String code, String state)
+    public void onCodeIssued(
+            OAuth20View view, AuthorizationRequest request,
+            String code, String state)
     {
         L.d(this, "== Authorization code was issued.");
         L.d(this, "code = %s", code);
@@ -113,12 +141,15 @@ public class OAuth20AuthorizationActivity extends BaseActivity implements OAuth2
 
 
     @Override
-    public void onTokenIssued(OAuth20View view, AccessToken accessToken, String state)
+    public void onTokenIssued(
+            OAuth20View view, AuthorizationRequest request,
+            AccessToken accessToken, String state)
     {
         L.d(this, "== Access token was issued.");
         L.d(this, "access_token = %s", accessToken.getAccessToken());
         L.d(this, "token_type = %s", accessToken.getTokenType());
         L.d(this, "expires_in = %d", accessToken.getExpiresIn());
+        L.d(this, "state = %s", state);
 
         // RFC 6749 prohibits authorization endpoints from issuing
         // a refresh token for response_type=token.
@@ -126,7 +157,9 @@ public class OAuth20AuthorizationActivity extends BaseActivity implements OAuth2
 
 
     @Override
-    public void onError(OAuth20View view, OAuth20Error error, String description, String uri, String state)
+    public void onError(
+            OAuth20View view, AuthorizationRequest request,
+            OAuth20Error error, String description, String uri, String state)
     {
         L.d(this, "== Error occurred.");
         L.d(this, "error = %s", error.name());
